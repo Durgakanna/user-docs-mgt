@@ -30,7 +30,11 @@ export class UsersController {
    * @memberof UsersController
    */
   @Post()
-  @ApiResponse({ status: HttpStatus.CREATED, description: "The request succeeded.", type: User })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The request succeeded.',
+    type: User,
+  })
   async CreateUser(@Body() dto: CreateUserDto): Promise<User> {
     return await this.usersService.createUser(dto);
   }
@@ -41,7 +45,11 @@ export class UsersController {
    * @memberof UsersController
    */
   @Post('login')
-  @ApiResponse({ status: HttpStatus.CREATED, description: "The request succeeded.", type: User })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The request succeeded.',
+    type: User,
+  })
   async FindUser(
     @Body() dto: CreateUserDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {

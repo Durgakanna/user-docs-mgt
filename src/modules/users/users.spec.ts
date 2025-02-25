@@ -24,7 +24,7 @@ describe('UsersController', () => {
           },
         },
       ],
-      imports: [AuthModule]
+      imports: [AuthModule],
     }).compile();
 
     usersController = module.get<UsersController>(UsersController);
@@ -50,9 +50,7 @@ describe('UsersController', () => {
       };
       jest.spyOn(usersService, 'validateUser').mockResolvedValue(result);
 
-      expect(await usersController.FindUser(createUserPayload)).toBe(
-        result
-      );
+      expect(await usersController.FindUser(createUserPayload)).toBe(result);
     });
   });
 

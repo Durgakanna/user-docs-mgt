@@ -6,7 +6,7 @@ export enum UserRole {
   VIEWER = 'viewer',
 }
 
-@Table({ tableName: 'users', schema: "public", timestamps: false })
+@Table({ tableName: 'users', schema: 'public', timestamps: false })
 export class User extends Model<User> {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
@@ -17,10 +17,13 @@ export class User extends Model<User> {
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
 
-  @Column({ type: DataType.ENUM(...Object.values(UserRole)), defaultValue: UserRole.VIEWER })
+  @Column({
+    type: DataType.ENUM(...Object.values(UserRole)),
+    defaultValue: UserRole.VIEWER,
+  })
   role: UserRole;
 
-  @Column({ type: DataType.STRING})
+  @Column({ type: DataType.STRING })
   refreshToken: string;
 
   @Column({ type: DataType.BOOLEAN, allowNull: false })

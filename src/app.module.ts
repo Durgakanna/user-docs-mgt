@@ -2,8 +2,8 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthenticationMiddleware } from './shared/authentication.middleware';
 import { EXCLUDED_ROUTES } from './shared/constant';
@@ -22,7 +22,7 @@ import { EXCLUDED_ROUTES } from './shared/constant';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       synchronize: false,
-      autoLoadModels: true
+      autoLoadModels: true,
     }),
     UsersModule,
     AuthModule,
@@ -30,6 +30,9 @@ import { EXCLUDED_ROUTES } from './shared/constant';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthenticationMiddleware).exclude(...EXCLUDED_ROUTES).forRoutes("*");
+    consumer
+      .apply(AuthenticationMiddleware)
+      .exclude(...EXCLUDED_ROUTES)
+      .forRoutes('*');
   }
 }

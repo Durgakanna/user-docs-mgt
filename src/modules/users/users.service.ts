@@ -10,23 +10,25 @@ export class UsersService {
   constructor(
     @InjectModel(User) private readonly userModel: typeof User,
     private readonly authService: AuthService,
-  ) { }
+  ) {}
 
   // To create new user
   async createUser(dto: CreateUserDto): Promise<User> {
-    let { role, password, ...rest } = dto;
-    role = role ?? UserRole.VIEWER;
+    const { role, password, ...rest } = dto;
+    const userRole = role ?? UserRole.VIEWER;
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.userModel.create({
       ...rest,
-      role,
+      role: userRole,
       password: hashedPassword,
-      isActive: true
+      isActive: true,
     } as any);
   }
 
   // To validate user and send token while login
-  async validateUser(dto: CreateUserDto): Promise<{ accessToken: string, refreshToken: string }> {
+  async validateUser(
+    dto: CreateUserDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const user = await this.findUserByEmail(dto);
     if (user) {
       const tokens = await this.authService.generateJWT(user);
@@ -39,7 +41,9 @@ export class UsersService {
   // To fetch user from db based on email then check if user is valid
   async findUserByEmail(dto: CreateUserDto): Promise<any> {
     const { email, password } = dto;
-    const user = await this.userModel.findOne({ where: { email, isActive: true } });
+    const user = await this.userModel.findOne({
+      where: { email, isActive: true },
+    });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     const isPasswordValid = await this.comparePasswords(
       password,
@@ -75,23 +79,39 @@ export class UsersService {
 
   // To logout the user
   async logout(userId: number): Promise<number> {
-    const result =  await this.userModel.update({ refreshToken: null }, { where: { id: userId } });
+    const result = await this.userModel.update(
+      { refreshToken: null },
+      { where: { id: userId } },
+    );
     const [id] = result;
     return id;
   }
 
-  async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
-    if (!refreshToken) throw new HttpException('Refresh token is required', HttpStatus.BAD_REQUEST);
+  async refreshAccessToken(
+    refreshToken: string,
+  ): Promise<{ accessToken: string }> {
+    if (!refreshToken)
+      throw new HttpException(
+        'Refresh token is required',
+        HttpStatus.BAD_REQUEST,
+      );
     const decoded = await this.authService.verifyToken(refreshToken);
     if (!decoded) {
-      throw new HttpException('Invalid or expired refresh token', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Invalid or expired refresh token',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
-    const user = await this.userModel.findOne({ where: { id: decoded.id, refreshToken } });
+    const user = await this.userModel.findOne({
+      where: { id: decoded.id, refreshToken },
+    });
     if (!user) {
-      throw new HttpException('Refresh token not found', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Refresh token not found',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const newAccessToken = await this.authService.generateJWT(user);
     return { accessToken: newAccessToken.accessToken };
   }
-
 }

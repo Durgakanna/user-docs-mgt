@@ -15,11 +15,7 @@ export class DocumentService {
   async uploadDocument(file) {
     const { originalname } = file;
 
-    return await this.s3_upload(
-      file.buffer,
-      this.AWS_S3_BUCKET,
-      originalname,
-    );
+    return await this.s3_upload(file.buffer, this.AWS_S3_BUCKET, originalname);
   }
 
   async s3_upload(file, bucket, name) {
@@ -43,12 +39,12 @@ export class DocumentService {
     }
   }
 
-async getAllDocuments() {
+  async getAllDocuments() {
     const files = await this.documentModel.findAll();
-    const fetchPromises = files.map(file => this.fetchFileFromS3(file.path));
+    const fetchPromises = files.map((file) => this.fetchFileFromS3(file.path));
     return await Promise.all(fetchPromises);
   }
-  
+
   async getDocument(id: number) {
     const file = await this.documentModel.findOne(id);
     if (!file) {
@@ -56,7 +52,7 @@ async getAllDocuments() {
     }
     return this.fetchFileFromS3(file.path);
   }
-  
+
   private async fetchFileFromS3(path: string) {
     const s3Key = `${path}`;
     const params = {
@@ -77,7 +73,6 @@ async getAllDocuments() {
     await this.s3.deleteObject(params).promise();
     await file.update({ isActive: false });
   }
-
 
   //   async updateDocument(id: number, filename?: string, path?: string) {
   //     const document = await this.documentRepo.findOne(id);

@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Param, Delete, UseInterceptors, UploadedFile, BadRequestException, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentService } from './docs.service';
-
 
 @Controller('documents')
 export class DocumentController {
@@ -9,7 +17,7 @@ export class DocumentController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {}))
-  async uploadFile(@UploadedFile() file: any){
+  async uploadFile(@UploadedFile() file: any) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
@@ -27,8 +35,7 @@ export class DocumentController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number):Promise<void> {
+  async delete(@Param('id') id: number): Promise<void> {
     return this.documentService.deleteDocument(id);
   }
-
 }

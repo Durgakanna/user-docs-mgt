@@ -33,12 +33,17 @@ describe('DocumentController', () => {
 
   describe('uploadFile', () => {
     it('should throw BadRequestException if no file is uploaded', async () => {
-      await expect(documentController.uploadFile(null)).rejects.toThrow(BadRequestException);
+      await expect(documentController.uploadFile(null)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should call documentService.uploadDocument with the file', async () => {
       const file = { originalname: 'test.pdf', buffer: Buffer.from('test') };
-      jest.spyOn(documentService, 'uploadDocument').mockResolvedValue({key: "aaa", Location: "http://localhost:8000/user.jpeg"} as any);
+      jest.spyOn(documentService, 'uploadDocument').mockResolvedValue({
+        key: 'aaa',
+        Location: 'http://localhost:8000/user.jpeg',
+      } as any);
 
       expect(await documentController.uploadFile(file)).toBe('file uploaded');
       expect(documentService.uploadDocument).toHaveBeenCalledWith(file);
@@ -57,14 +62,18 @@ describe('DocumentController', () => {
   describe('getOne', () => {
     it('should return a document by id', async () => {
       const result = { id: 1, name: 'doc1' };
-      jest.spyOn(documentService, 'getDocument').mockResolvedValue(result as any);
+      jest
+        .spyOn(documentService, 'getDocument')
+        .mockResolvedValue(result as any);
       expect(await documentController.getOne(1)).toBe(result);
     });
   });
 
   describe('delete', () => {
     it('should delete a document by id', async () => {
-      jest.spyOn(documentService, 'deleteDocument').mockResolvedValue(undefined);
+      jest
+        .spyOn(documentService, 'deleteDocument')
+        .mockResolvedValue(undefined);
 
       expect(await documentController.delete(1)).toBeUndefined();
       expect(documentService.deleteDocument).toHaveBeenCalledWith(1);
