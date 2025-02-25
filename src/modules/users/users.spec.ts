@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { createUserPayload, result } from './user.mockdata';
+import { AuthModule } from '../auth/auth.module';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -23,6 +24,7 @@ describe('UsersController', () => {
           },
         },
       ],
+      imports: [AuthModule]
     }).compile();
 
     usersController = module.get<UsersController>(UsersController);
@@ -49,7 +51,7 @@ describe('UsersController', () => {
       jest.spyOn(usersService, 'validateUser').mockResolvedValue(result);
 
       expect(await usersController.FindUser(createUserPayload)).toBe(
-        createUserPayload,
+        result
       );
     });
   });
