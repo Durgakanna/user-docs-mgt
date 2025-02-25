@@ -46,6 +46,6 @@ JWT_SECRET=your-jwt-secret
 npm run start
 ```
 
-## Swagger
-see documentation [here](http://localhost:8000/api)
+## API Documentation
+see documentation [swagger](http://localhost:8000/api)
 
